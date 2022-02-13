@@ -1,24 +1,27 @@
-import {Injectable, isDevMode} from '@angular/core';
-import {HttpClient, HttpParams} from "@angular/common/http";
-import {map, Observable, of, tap} from "rxjs";
-import {AW_Current, AW_LocationData, AW_Forecast} from "./models/accuWeatherModels";
+import { Injectable, isDevMode } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { map, Observable, of, tap } from 'rxjs';
+import {
+  AW_Current,
+  AW_LocationData,
+  AW_Forecast,
+} from './models/accuWeatherModels';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AccuWeatherApiService {
-
   private readonly DOAMIN = 'http://dataservice.accuweather.com';
 
   private readonly MOCK_PATH = './assets/mocks/accuWeatherApi';
 
-  private readonly API_KEY = 'kOCZvsbUrY12IBGGc2GnAAbxb4VeKarN';
+  private readonly API_KEY = 'FjttvB4XFLUwg6OFX5YSKb4eBKWGze8I';
 
   /**
    * Whether to use mock responses instead of live API calls
    * @private
    */
-  private readonly useMock: boolean = true;  // <-- CHANGE THIS
+  private readonly useMock: boolean = true; // <-- CHANGE THIS
 
   private get isMock() {
     // Make sure not to use mock in production
@@ -31,12 +34,12 @@ export class AccuWeatherApiService {
    */
   private locationsMap = new Map<string, AW_LocationData>();
 
-  constructor(
-    private http: HttpClient,
-  ) {
+  constructor(private http: HttpClient) {
     // Show mock confirmation alert
     if (this.useMock) {
-      this.useMock = !confirm('Using mock!\nDo you want to switch to live API?');
+      this.useMock = !confirm(
+        'Using mock!\nDo you want to switch to live API?'
+      );
     }
   }
 
@@ -52,8 +55,8 @@ export class AccuWeatherApiService {
       : `${this.DOAMIN}/locations/v1/cities/geoposition/search`;
     const q = `${lat},${lng}`;
     const params = this.setParams().set('q', q);
-    return this.http.get<AW_LocationData>(url, {params}).pipe(
-      map(resp => {
+    return this.http.get<AW_LocationData>(url, { params }).pipe(
+      map((resp) => {
         this.addLocationData(resp);
         return resp.Key;
       })
@@ -70,9 +73,9 @@ export class AccuWeatherApiService {
       ? `${this.MOCK_PATH}/autoComplete.json`
       : `${this.DOAMIN}/locations/v1/cities/autocomplete`;
     const params = this.setParams().set('q', q);
-    return this.http.get<AW_LocationData[]>(url, {params}).pipe(
-      tap(r => r.forEach(loc => this.addLocationData(loc)))
-    );
+    return this.http
+      .get<AW_LocationData[]>(url, { params })
+      .pipe(tap((r) => r.forEach((loc) => this.addLocationData(loc))));
   }
 
   /**
@@ -88,9 +91,9 @@ export class AccuWeatherApiService {
       ? `${this.MOCK_PATH}/findLocation.json`
       : `${this.DOAMIN}/locations/v1/${locationKey}`;
     const params = this.setParams();
-    return this.http.get<AW_LocationData>(url, {params}).pipe(
-      tap(r => this.addLocationData(r))
-    );
+    return this.http
+      .get<AW_LocationData>(url, { params })
+      .pipe(tap((r) => this.addLocationData(r)));
   }
 
   /**
@@ -102,9 +105,7 @@ export class AccuWeatherApiService {
       ? `${this.MOCK_PATH}/currentWeather.json`
       : `${this.DOAMIN}/currentconditions/v1/${locationKey}`;
     const params = this.setParams();
-    return this.http.get<[AW_Current]>(url, {params}).pipe(
-      map(r => r[0])
-    );
+    return this.http.get<[AW_Current]>(url, { params }).pipe(map((r) => r[0]));
   }
 
   /**
@@ -116,7 +117,7 @@ export class AccuWeatherApiService {
       ? `${this.MOCK_PATH}/forecast.json`
       : `${this.DOAMIN}/forecasts/v1/daily/5day/${locationKey}`;
     const params = this.setParams().set('metric', true);
-    return this.http.get<AW_Forecast>(url, {params});
+    return this.http.get<AW_Forecast>(url, { params });
   }
 
   /**
@@ -129,8 +130,7 @@ export class AccuWeatherApiService {
     if (this.isMock) {
       httpParams.toString = () => '';
     }
-    return httpParams
-      .set('apikey', this.API_KEY);
+    return httpParams.set('apikey', this.API_KEY);
   }
 
   /**
@@ -141,5 +141,4 @@ export class AccuWeatherApiService {
   private addLocationData(data: AW_LocationData) {
     this.locationsMap.set(data.Key, data);
   }
-
 }
