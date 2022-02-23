@@ -21,7 +21,7 @@ export class AccuWeatherApiService {
    * Whether to use mock responses instead of live API calls
    * @private
    */
-  private readonly useMock: boolean = true; // <-- CHANGE THIS
+  private readonly useMock: boolean = false; // <-- CHANGE THIS
 
   private get isMock() {
     // Make sure not to use mock in production

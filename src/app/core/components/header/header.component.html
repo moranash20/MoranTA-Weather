@@ -1,10 +1,17 @@
 <p>
-
   <mat-toolbar color="primary" id="main-toolbar">
-    <span>Herolo weather task</span>
+    <span>Weather task</span>
     <mat-button-toggle-group [value]="currentPage$ | async">
-      <mat-button-toggle [value]="Pages.WEATHER" [routerLink]="Pages.WEATHER + '/' + lastLocationKey">Home</mat-button-toggle>
-      <mat-button-toggle [value]="Pages.FAVORITES" [routerLink]="Pages.FAVORITES">Favorites</mat-button-toggle>
+      <mat-button-toggle
+        [value]="Pages.WEATHER"
+        [routerLink]="Pages.WEATHER + '/' + lastLocationKey"
+        >Home</mat-button-toggle
+      >
+      <mat-button-toggle
+        [value]="Pages.FAVORITES"
+        [routerLink]="Pages.FAVORITES"
+        >Favorites</mat-button-toggle
+      >
     </mat-button-toggle-group>
   </mat-toolbar>
 
@@ -14,5 +21,4 @@
       <mat-button-toggle value="F">°F</mat-button-toggle>
     </mat-button-toggle-group>
   </mat-toolbar>
-
 </p>
